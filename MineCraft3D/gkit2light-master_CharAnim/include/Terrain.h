@@ -24,6 +24,12 @@ class Terrain
         int height = 15;
         float realHeight=0;
 
+        void init_lights();
+        void init_sand();
+
+        void draw_lights();
+        void draw_sand();
+
         void getLight(vec3 light_pos)
         {
           light_position = light_pos;
@@ -40,12 +46,14 @@ class Terrain
 
     private:
         unsigned int texture;
+        Transform mvp;
         GLuint texcoord_buffer;
         GLuint normal_buffer;
         Mesh m_terrain;
-        GLuint m_program;
-        unsigned int instanceVBO, VBO, colorVBO;
-        unsigned int VAO;
+        GLuint m_program, m_program_light;
+
+        unsigned int instanceVBO, VBO, colorVBO, lightVBO, instanceLightVBO;
+        unsigned int VAO, lightVAO;
 
         GLuint ice_texture;
         GLuint water_texture;
@@ -58,6 +66,11 @@ class Terrain
 
         vec3 light_position = vec3(0,0,0);
         vec3 light1_position = vec3(0,0,0);
+
+        std::vector<vec3> spot_light_positions;
+        std::vector<Mesh> spot_light;
+        std::vector<vec3> light_colors;
+
         vec3 view_position = vec3(0,0,0);
 
 };

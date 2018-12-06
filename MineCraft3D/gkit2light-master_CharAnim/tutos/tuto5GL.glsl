@@ -24,8 +24,7 @@ void main( )
 {
     height = vec2(sin((Globaltime/1000.0)+ pos.x),pos.y);
     vec3 position1 = position+pos  ;
-    if(height.y <0.5)
-	position1 += vec3(0.0,1 + sin((Globaltime/1000.0)+ pos.x),0.0);
+
     gl_Position= mvpMatrix * vec4(position1, 1);
     vertex_texcoord= texcoord;
     FragPos = position1;
@@ -55,6 +54,8 @@ uniform vec3 lightPos;
 uniform vec3 light1Pos;
 uniform vec3 viewPos;
 
+
+
 struct PointLight {
     vec3 position;
     
@@ -70,22 +71,23 @@ struct PointLight {
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
-    vec3 lightDir = normalize(light.position - fragPos);
+     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-   
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8);
     // attenuation
     float distance = length(light.position - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
     // combine results
     vec3 ambient = light.ambient ;
     vec3 diffuse = light.diffuse * diff ;
-
+    vec3 specular = light.specular * spec;
     ambient *= attenuation;
     diffuse *= attenuation;
-    return (ambient + diffuse );
+    specular *= attenuation;
+    return (ambient + diffuse + specular);
 }
 
 
@@ -113,16 +115,20 @@ void main()
      light.specular = vec3(1.0, 1.0, 1.0);
      vec3 cor = CalcPointLight(light,Anormal,FragPos,viewDir);
      vec3 cor1 = cor*vec3(1.0,0.0,0.3);
+     
+
    
     vec4 phong = vec4(ambient + diffuse,1.0)+ vec4(cor1,1.0);
     vec4 color;
     float slope = 1.0 - Anormal.y;
     if(height.y < 0.5){  
-     	color= texture(ice_texture, vertex_texcoord);
-	color.z += height.x/50.0;
-	color.y += height.x/50.0;
-	color.x += height.x/50.0;
-	fragment_color= phong*color ;
+     	//color= texture(ice_texture, vertex_texcoord);
+	//color.z += height.x/50.0;
+	//color.y += height.x/50.0;
+	//color.x += height.x/50.0;
+	//fragment_color= phong*color ;
+
+	discard;
 	return;
 	}
     if(height.y > 0.5 && height.y <= 2.5){

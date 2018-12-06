@@ -23,7 +23,7 @@ int CharAnimViewer::init()
 {
     Viewer::init();
     cout<<"==>master_CharAnim/CharAnimViewer"<<endl;
-    m_camera.lookat( Point(0,0,0), 500 );
+    m_camera.lookat( Point(0,0,0), 400 );
 
     m_light= read_mesh("data/cube.obj");
 
@@ -101,12 +101,14 @@ int CharAnimViewer::render()
 
     float t = 200*abs(sin(global_time()/6000));
     float tt = 200*abs(cos(90-global_time()/6000));
-    Vector trans = Vector(300,30,300);
+
+    Vector trans = Vector(30,300,30);
     Vector trans2 = Vector(t,17,tt);
     light_sun = Translation(trans)*Scale(5,5,5);
     splot_light = Translation(trans2);
     terrain.getLight(vec3(trans.x,trans.y,trans.z));
     terrain.getLight1(vec3(trans2.x,trans2.y,trans2.z));
+
 //        vec3 pos(Point(300, 300, 300 ));
 //        // configurer le shader program
 //        // . recuperer les transformations
